@@ -1,14 +1,30 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
+import './styles/index.css';
+import App from './components/App';
 import * as serviceWorker from './serviceWorker';
 
+/*const users = [
+    {
+        firstName: 'David',
+        lastName: 'Curipoma'
+    },
+    {
+        firstName: 'Victoria',
+        lastName: 'Mediavilla'
+    },
+    {
+        firstName: 'Juan',
+        lastName: 'Perez'
+    }
+];*/
+
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+    <React.StrictMode>
+        <App />
+
+    </React.StrictMode>,
+    document.getElementById('root')
 );
 
 // If you want your app to work offline and load faster, you can change
