@@ -1,54 +1,54 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import '../styles/todo-list.css';
+import Spinner from './Spinner';
 
 const TodoList = () => {
 
-    const [ todos, setTodos ] = React.useState( [] );
-    const [ completed, setCompleted ] = React.useState( [] );
-    const [ darkMode, setDarkMode ] = React.useState( false );
-    const [ windowWidth, setWindowWidth ] = React.useState( window.innerWidth );
+    const [ todos, setTodos ] = useState( [] );
+    const [ completed, setCompleted ] = useState( [] );
+    const [ darkMode, setDarkMode ] = useState( false );
+    const [ userInfo, setUserInfo ] = useState( null );
+    const [ windowWith, setWindowWith ] = useState( window.innerWidth );
+
+    useEffect( () => {
+        const getData = async() => {
+            const data = await fetch( 'https://jsonplaceholder.typicode.com/users/1' );
+            const dataJson = await data.json();
+            setUserInfo( dataJson );
+        };
+        getData();
+    }, [] );
 
     useEffect( () => {
         console.log( 'efecto', todos.length );
         if( todos.length > 0 ) {
             document.title = `${ todos.length } tareas pendientes`;
         } else {
-            document.title = 'No tienes tareas pendientes';
+            document.title = `No tienes tareas pendientes`;
         }
     }, [ todos ] );
 
     useEffect( () => {
-        console.log( 'cambio de fondo', darkMode );
-        if( darkMode ) {
-            console.log( 'DARK' );
-        } else {
-            console.log( 'LIGHT' );
-        }
+        console.log( 'El nuevo estado es: ', darkMode
+            ? 'DARK MODE'
+            : 'LIGHT  MODE' );
     }, [ darkMode ] );
 
     useEffect( () => {
-        fetch( 'https://jsonplaceholder.typicode.com/users/1' )
-            .then( ( data ) => {
-                return data.json();
-            } )
-            .then( ( json ) => {
-                console.log( 'Datos de usuario', json );
-            } );
-    }, [] );
+        console.log( 'El COMPONENTE SE MONTO' );
 
-    const handleResize = () => {
-        setWindowWidth( window.innerWidth );
-    };
-
-    useEffect( () => {
-        console.log( 'Ejecución del efecto' );
         window.addEventListener( 'resize', handleResize );
 
         return () => {
-            console.log( 'retorno del efecto ' );
+            console.log( 'EL COMPONENTE SE DESMONTO' );
             window.removeEventListener( 'resize', handleResize );
         };
     } );
+
+    const handleResize = () => {
+        console.log( window.innerWidth );
+        setWindowWith( window.innerWidth );
+    };
 
     const handleAddTask = () => {
         const task = document.querySelector( '#task' ).value;
@@ -72,21 +72,40 @@ const TodoList = () => {
     };
 
     const handleDarkMode = () => {
-        setDarkMode( !darkMode );
+        setDarkMode( ( prevDarkMode ) => !prevDarkMode );
     };
 
     return (
         <div className={ darkMode
             ? 'dark-mode'
             : '' }>
-            <div>Ancho de la ventana: { windowWidth }</div>
-            <button onClick={ handleDarkMode }>
+
+
+            <h1>El ancho de la ventana es: { windowWith }</h1>
+
+
+            <div>
+                <h1>Información del usuario</h1>
                 {
-                    darkMode
-                        ? 'Modo claro'
-                        : 'Modo oscuro'
+                    userInfo
+                        ?
+                        <ul>
+                            <li>{ userInfo.name }</li>
+                            <li>{ userInfo.email }</li>
+                            <li>{ userInfo.website }</li>
+                            <li>{ userInfo.phone }</li>
+                        </ul>
+                        : <Spinner />
                 }
+            </div>
+
+
+            <button onClick={ handleDarkMode }>
+                Cambiar a modo { darkMode
+                ? 'claro'
+                : 'oscuro' }
             </button>
+
             <div>
                 <label htmlFor='task'>Tarea</label>
                 <input type='text' id='task' />
